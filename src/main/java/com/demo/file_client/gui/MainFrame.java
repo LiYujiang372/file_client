@@ -23,6 +23,9 @@ public class MainFrame {
 	@Autowired
 	private FileDao fileDao;
 	
+	@Autowired
+	private NetStateLabel netStateLabel;
+	
 	private static Logger logger = LoggerFactory.getLogger(MainFrame.class);
 	
 	/**
@@ -48,13 +51,12 @@ public class MainFrame {
         // 添加面板
         frame.add(panel);
 
-        // 添加标签
-        JLabel label = new JLabel();
-        panel.add(label);
+        // 添加网络状态标签
+        panel.add(netStateLabel);
         
         //上传
         JButton chooseFileButton = new JButton("选择文件");
-        chooseFileButton.setBounds(350, 100, 70, 30);
+        chooseFileButton.setBounds(300, 100, 170, 30);
         chooseFileButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -62,13 +64,15 @@ public class MainFrame {
 				jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
 				jfc.showDialog(new JLabel(), "选择");
 				File file = jfc.getSelectedFile();
-				if(file.isDirectory()) {
-					logger.info("文件夹:{}", file.getAbsolutePath());
-				} else if(file.isFile()) {
-					logger.info("文件:{}", file.getAbsolutePath());
+				if (file != null) {
+					if(file.isDirectory()) {
+						logger.info("文件夹:{}", file.getAbsolutePath());
+					} else if(file.isFile()) {
+						logger.info("文件:{}", file.getAbsolutePath());
+					}
+					logger.info("载入文件...");
+					fileDao.addFile(file);
 				}
-				logger.info("载入文件...");
-				fileDao.addFile(file);
 			}
 		});
         panel.add(chooseFileButton);

@@ -7,13 +7,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.demo.file_client.controller.GUIController;
 import com.demo.file_client.net.TcpClient;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 
 /**
  * 客户端上传文件服务
@@ -26,7 +31,12 @@ public class FileDao {
 	@Autowired
 	private TcpClient client;
 	
+	@Autowired
+	private GUIController guiController;
+	
 	private List<File> files = new ArrayList<>();
+	
+	private static Logger logger = LoggerFactory.getLogger(FileDao.class);
 	
 	/**
 	 * 添加一个文件

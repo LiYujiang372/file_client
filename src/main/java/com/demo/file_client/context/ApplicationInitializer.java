@@ -25,7 +25,7 @@ public class ApplicationInitializer implements ApplicationRunner{
 		// 显示应用 GUI
 		frame.showFrame();
 		//启动服务器
-		client.conn();
+		client.doConn();
 	}
 
 }
