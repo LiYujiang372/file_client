@@ -1,5 +1,6 @@
 package com.demo.file_client.net;
 
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.demo.file_client.controller.GUIController;
 import com.demo.file_client.net.handler.FileHandler;
+import com.demo.file_client.net.handler.ResponseHandler;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -18,6 +20,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -37,7 +40,7 @@ public class TcpClient {
 	private GUIController guiController;
 	
 	//服务器地址
-	private final static String SERVER_IP = "192.168.1.97";
+	private final static String SERVER_IP = "10.0.0.167";
 	
 	//服务器端口号
 	private final static int SERVER_PORT = 2345;
@@ -59,7 +62,7 @@ public class TcpClient {
 			.handler(new ChannelInitializer<Channel>() {
 				@Override
 				protected void initChannel(Channel ch) throws Exception {
-					ch.pipeline().addLast(new FileHandler());
+					ch.pipeline().addLast(new ResponseHandler());
 				}
 			});
 		channelFutureListener = new ChannelFutureListener() {
@@ -119,6 +122,7 @@ public class TcpClient {
 		}else {
 			logger.error("连接断开,请检查网络");
 			guiController.netState(0);
+			doConn();
 			return false; 
 		}
 	}

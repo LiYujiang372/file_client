@@ -1,35 +1,35 @@
 package com.demo.file_client.net.handler;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.CharsetUtil;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
 
-public class FileHandler extends SimpleChannelInboundHandler<ByteBuf> {
+/**
+ * 处理文件传输协议
+ * @author tyjw
+ *
+ */
+public class FileHandler extends ChannelOutboundHandlerAdapter {
 	
 	private static Logger logger = LoggerFactory.getLogger(FileHandler.class);
-
-	@Override
-	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		logger.info("和远程服务器建立连接");
-	}
-
-	@Override
-	protected void channelRead0(ChannelHandlerContext arg0, ByteBuf buf) throws Exception {
-		int length = buf.readableBytes();
-		byte[] bytes = new byte[length];
-		buf.readBytes(bytes);
-		logger.info("服务器响应:{}", new String(bytes, CharsetUtil.UTF_8));
-	}
-
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		cause.printStackTrace();
-		logger.error("异常信息为:[{}]", cause.getMessage(), cause);
-	}
 	
+	/**
+	 * write事件
+	 */
+	@Override
+	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+		//logger.info("一个写事件");
+	}
+
+
+	/**
+	 * 冲刷数据出站事件
+	 */
+	@Override
+	public void flush(ChannelHandlerContext ctx) throws Exception {
+		//logger.info("一个消息出站事件");
+	}
+
 }

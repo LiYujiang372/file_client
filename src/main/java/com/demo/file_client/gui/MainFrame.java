@@ -15,13 +15,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.demo.file_client.data.FileDao;
+import com.demo.file_client.controller.FileController;
 
 @Component
 public class MainFrame {
 	
 	@Autowired
-	private FileDao fileDao;
+	private FileController fileController;
 	
 	@Autowired
 	private NetStateLabel netStateLabel;
@@ -71,7 +71,7 @@ public class MainFrame {
 						logger.info("文件:{}", file.getAbsolutePath());
 					}
 					logger.info("载入文件...");
-					fileDao.addFile(file);
+					fileController.addFile(file);
 				}
 			}
 		});
