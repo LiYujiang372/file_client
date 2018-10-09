@@ -5,7 +5,7 @@ import java.awt.Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.demo.file_client.gui.NetStateLabel;
+import com.demo.file_client.gui.component.NetStateLabel;
 
 /**
  * 视图显示控制层

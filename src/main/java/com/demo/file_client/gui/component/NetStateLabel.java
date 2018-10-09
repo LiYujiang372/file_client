@@ -1,4 +1,4 @@
-package com.demo.file_client.gui;
+package com.demo.file_client.gui.component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.JLabel;

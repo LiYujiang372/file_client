@@ -40,7 +40,7 @@ public class TcpClient {
 	private GUIController guiController;
 	
 	//服务器地址
-	private final static String SERVER_IP = "10.0.0.167";
+	private final static String SERVER_IP = "192.168.1.97";
 	
 	//服务器端口号
 	private final static int SERVER_PORT = 2345;
