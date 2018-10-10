@@ -38,6 +38,7 @@ public class MainFrame {
         //设置布局和大小
         frame.setLayout(null);
         frame.setSize(1000, 680);
+        frame.setResizable(false);
         
         //关闭窗口时也退出应用程序
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

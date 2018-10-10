@@ -8,19 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.demo.file_client.controller.FileController;
 import com.demo.file_client.controller.GUIController;
-import com.demo.file_client.net.handler.FileHandler;
-import com.demo.file_client.net.handler.ResponseHandler;
+import com.demo.file_client.net.handler.ProcessHandler;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -39,8 +35,11 @@ public class TcpClient {
 	@Autowired
 	private GUIController guiController;
 	
+	@Autowired
+	private ProcessHandler processHandler;
+	
 	//服务器地址
-	private final static String SERVER_IP = "192.168.1.97";
+	private final static String SERVER_IP = "10.0.0.167";
 	
 	//服务器端口号
 	private final static int SERVER_PORT = 2345;
@@ -62,7 +61,7 @@ public class TcpClient {
 			.handler(new ChannelInitializer<Channel>() {
 				@Override
 				protected void initChannel(Channel ch) throws Exception {
-					ch.pipeline().addLast(new ResponseHandler());
+					ch.pipeline().addLast(processHandler);
 				}
 			});
 		channelFutureListener = new ChannelFutureListener() {
@@ -95,19 +94,17 @@ public class TcpClient {
 	/**
 	 * 发送数据
 	 */
-	public void sendRequest(byte[] bytes) {
-		ByteBuf buf = Unpooled.buffer();
-		buf.writeBytes(bytes);
-		sendRequest(buf);
-	}
-	
-	/**
-	 * 发送数据
-	 */
-	public void sendRequest(ByteBuf buf) {
+	public void sendFileFrame() {
 		if (checkChannel(channel)) {
-			channel.writeAndFlush(buf);
-			logger.info("已经向服务器发送文件数据");
+			ChannelFuture future = channel.writeAndFlush(FileController.queue.poll());
+			future.addListener(new ChannelFutureListener() {
+				@Override
+				public void operationComplete(ChannelFuture future) throws Exception {
+					if (future.isSuccess()) {
+						logger.info("已经向服务器发送文件数据");
+					}
+				}
+			});
 		}
 	}
 	

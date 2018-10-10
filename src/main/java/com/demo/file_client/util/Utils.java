@@ -110,5 +110,9 @@ public class Utils {
 	public static long getRandomLong() {
 		return (long) (Math.random() * Long.MAX_VALUE);
 	}
+	
+	public static void printThreadInfo(String message) {
+		System.err.println(Thread.currentThread().getName() + Thread.currentThread().getId() + "-->" + message);
+	}
 
 }
