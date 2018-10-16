@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.demo.file_client.controller.FileController;
+import com.demo.file_client.controller.NetController;
 import com.demo.file_client.controller.GUIController;
 
 /**
@@ -20,7 +20,7 @@ import com.demo.file_client.controller.GUIController;
 public class UploadButton extends JButton {
 	
 	@Autowired
-	private FileController fileController;
+	private NetController netController;
 	
 	@Autowired
 	private GUIController guiController;
@@ -37,7 +37,7 @@ public class UploadButton extends JButton {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Collection<FileLabelPair> pairs = FileListPanel.pairMap.values();
-				fileController.sendFiles(pairs);
+				netController.sendFiles(pairs);
 				guiController.disableButton();
 			}
 		});

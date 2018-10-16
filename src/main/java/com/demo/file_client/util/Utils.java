@@ -30,6 +30,15 @@ public class Utils {
 	}
 	
 	/**
+	 * 数组为空
+	 * @param c
+	 * @return
+	 */
+	public static boolean isBlank(Object[] objs) {
+		return objs == null || objs.length == 0;
+	}
+	
+	/**
 	 * 判断字符串是否为(null "")
 	 * @return
 	 */

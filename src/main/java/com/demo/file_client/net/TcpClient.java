@@ -8,11 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.demo.file_client.controller.FileController;
 import com.demo.file_client.controller.GUIController;
-import com.demo.file_client.net.handler.ProcessHandler;
+import com.demo.file_client.net.handler.oauth.OauthInHandler;
+import com.demo.file_client.net.handler.oauth.OauthOutHandler;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -30,13 +31,14 @@ public class TcpClient {
 	
 	private Channel channel;
 	
-	private ChannelFutureListener channelFutureListener;
-	
 	@Autowired
 	private GUIController guiController;
 	
 	@Autowired
-	private ProcessHandler processHandler;
+	private OauthInHandler oauthInHandler;
+	
+	@Autowired
+	private OauthOutHandler oauthOutHandler;
 	
 	//服务器地址
 	private final static String SERVER_IP = "10.0.0.167";
@@ -61,25 +63,10 @@ public class TcpClient {
 			.handler(new ChannelInitializer<Channel>() {
 				@Override
 				protected void initChannel(Channel ch) throws Exception {
-					ch.pipeline().addLast(processHandler);
+					ch.pipeline().addLast(oauthOutHandler);
+					ch.pipeline().addLast(oauthInHandler);
 				}
 			});
-		channelFutureListener = new ChannelFutureListener() {
-			@Override
-			public void operationComplete(ChannelFuture future) throws Exception {
-				if (future.isSuccess()) {
-					channel = future.channel();
-					guiController.netState(1);
-					logger.info("已经和服务器建立连接");
-				}else {
-					guiController.netState(0);
-					Throwable cause = future.cause();
-					logger.error("连接失败,错误详情：[{}]",cause.getMessage(), cause);
-					logger.info("尝试重新连接...");
-					doConn();
-				}
-			}
-		};
 	}
 	
 	/**
@@ -88,20 +75,33 @@ public class TcpClient {
 	 */
 	public void doConn() {
 		ChannelFuture future = bootstrap.connect();
-		future.addListener(channelFutureListener);
+		future.addListener(new ChannelFutureListener() {
+			@Override
+			public void operationComplete(ChannelFuture future) throws Exception {
+				if (future.isSuccess()) {
+					logger.info("已经连接至远程服务器, 开始鉴权");
+					channel = future.channel();
+				}else {
+					Throwable cause = future.cause();
+					logger.error("连接失败,错误详情：[{}]",cause.getMessage(), cause);
+					guiController.netState(0);
+					doConn();
+				}
+			}
+		});
 	}
 	
 	/**
 	 * 发送数据
 	 */
-	public void sendFileFrame() {
+	public void sendBuf(ByteBuf buf) {
 		if (checkChannel(channel)) {
-			ChannelFuture future = channel.writeAndFlush(FileController.queue.poll());
+			ChannelFuture future = channel.writeAndFlush(buf);
 			future.addListener(new ChannelFutureListener() {
 				@Override
 				public void operationComplete(ChannelFuture future) throws Exception {
 					if (future.isSuccess()) {
-						logger.info("已经向服务器发送文件数据");
+						logger.info("已经向服务器发送文件元数据");
 					}
 				}
 			});

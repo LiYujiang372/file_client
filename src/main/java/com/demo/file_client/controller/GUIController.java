@@ -39,9 +39,10 @@ public class GUIController {
 	/**
 	 * 更新文件传输进度
 	 */
-	public void showProcess(long fileId, byte process) {
+	public void showProcess(long fileId, int save_size) {
 		 FileLabelPair pair = FileListPanel.pairMap.get(fileId);
-		 pair.updateProcess(process);
+		 int file_size = (int) pair.getFile().length();
+		 pair.updateProcess((byte) (save_size * 100.0/file_size));
 	}
 	
 	/**

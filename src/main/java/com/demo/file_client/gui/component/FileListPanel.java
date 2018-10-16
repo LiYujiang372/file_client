@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.demo.file_client.gui.pattern.UIPatterns;
+import com.demo.file_client.util.Utils;
 
 /**
  * 文件列表标签
@@ -26,6 +27,9 @@ public class FileListPanel extends JPanel {
 	
 	private static final long serialVersionUID = -6696011519189813884L;
 	
+	/**
+	 * 全局变量,记录文件数量
+	 */
 	private static int number = 0;
 	
 	public static Map<Long, FileLabelPair> pairMap = new ConcurrentHashMap<>();
@@ -57,6 +61,17 @@ public class FileListPanel extends JPanel {
 		this.repaint();
 		if (pairMap.size() == 1) {
 			uploadButton.setEnabled(true);
+		}
+	}
+	
+	/**
+	 * 添加一些文件
+	 */
+	public void addFiles(File[] files) {
+		if (!Utils.isBlank(files)) {
+			for (File file : files) {
+				addOneFile(file);
+			}
 		}
 	}
 

@@ -35,17 +35,11 @@ public class ChooseButton extends JButton {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser jfc = new JFileChooser();
-				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				jfc.showDialog(new JLabel(), "选择");
-				File file = jfc.getSelectedFile();
-				if (file != null) {
-					if(file.isDirectory()) {
-						logger.info("文件夹:{}", file.getAbsolutePath());
-					} else if(file.isFile()) {
-						logger.info("文件:{}", file.getAbsolutePath());
-						filesPanel.addOneFile(file);
-					}
-				}
+				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);//只允许用户选择文件
+				jfc.setMultiSelectionEnabled(true);
+				jfc.showDialog(new JLabel(), "选择文件");
+				File[] files = jfc.getSelectedFiles();
+				filesPanel.addFiles(files);
 			}
 		});
 	}
