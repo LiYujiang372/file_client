@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.demo.file_client.context.FileReader;
 import com.demo.file_client.controller.GUIController;
+import com.demo.file_client.controller.NetController;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -59,6 +60,10 @@ public class ProcessHandler extends SimpleChannelInboundHandler<ByteBuf> {
 					}
 				}
 			});
+		}else {
+			if (NetController.bufs.size() > 0) {
+				ctx.writeAndFlush(NetController.bufs.poll());
+			}
 		}
 	}
 

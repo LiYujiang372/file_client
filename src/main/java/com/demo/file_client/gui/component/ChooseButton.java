@@ -19,6 +19,7 @@ public class ChooseButton extends JButton {
 
 	private static final long serialVersionUID = -5588531078590985226L;
 	
+	@SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory.getLogger(ChooseButton.class);
 	
 	@Autowired

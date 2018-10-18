@@ -2,14 +2,20 @@ package com.demo.file_client.gui.component;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import javax.swing.JLabel;
-import com.demo.file_client.gui.pattern.UIPatterns;
 import com.demo.file_client.util.Utils;
 
 public class FileLabelPair {
 	
 	//文件
 	private File file;
+	
+	//文件所有字节
+	private byte[] bytes;
 	
 	//文件唯一Id
 	private long fileId;
@@ -22,6 +28,11 @@ public class FileLabelPair {
 	
 	public FileLabelPair(int number, File file) {
 		this.file = file;
+		try {
+			this.bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.fileId = Utils.getRandomLong();
 		this.nameLable = initNameLabel(number, file);
 		this.processLabel = initProcessLabel(number);
@@ -88,6 +99,14 @@ public class FileLabelPair {
 
 	public void setFileId(long fileId) {
 		this.fileId = fileId;
+	}
+
+	public byte[] getBytes() {
+		return bytes;
+	}
+
+	public void setBytes(byte[] bytes) {
+		this.bytes = bytes;
 	}
 	
 }

@@ -26,7 +26,7 @@ public class FileReader {
 	private TcpData tcpData;
 	
 	//文件帧数据区大小
-	public static final int FRAME_SIZE = 500;
+	public static final int FRAME_SIZE = 20480;
 	
 	private static Logger logger = LoggerFactory.getLogger(FileReader.class);
 	
@@ -83,6 +83,28 @@ public class FileReader {
 	}
 	
 	/**
+	 * 读取字节数组特定区间的字节
+	 */
+	public byte[] readBytes(byte[] bytes, int offset, int length) {	
+		int diff = bytes.length - offset;
+		if (diff <= 0) {
+			return null;
+		}
+		//根据剩余字节数更新diff
+		length = diff < length ? diff : length;
+		byte[] temp = new byte[length];
+		int start = offset;
+		int end = offset + length - 1;
+		int index = 0;
+		while(start <= end) {
+			temp[index] = bytes[start];
+			start++;
+			index++;
+		}
+		return temp;
+	}
+	
+	/**
 	 * 获取一帧文件数据
 	 */
 	@LogExecuteTime
@@ -92,7 +114,7 @@ public class FileReader {
 			return null;
 		}
 		File file = pair.getFile();
-		byte[] bytes = readBytes(file, offset, FRAME_SIZE);
+		byte[] bytes = readBytes(pair.getBytes(), offset, FRAME_SIZE);
 		if (bytes == null) {
 			return null;
 		}
@@ -104,17 +126,8 @@ public class FileReader {
 	 * 获取文件元数据帧
 	 */
 	public ByteBuf getFileMetaBuf(FileLabelPair pair) {
-		File file = pair.getFile();
-		long fileId = pair.getFileId();
-		
-		byte[] bytes = readAllBytes(file);
-		if (bytes == null || bytes.length == 0) {
-			return null;
-		}
-		//计算MD5值
-		byte[] md5 = DigestUtils.md5Digest(bytes);
-		logger.info("文件的md5值字节长度为:{}", md5.length);
-		ByteBuf metaBuf = tcpData.getFileMetaBuf(file, fileId, md5);
+		byte[] md5 = DigestUtils.md5Digest(pair.getBytes());
+		ByteBuf metaBuf = tcpData.getFileMetaBuf(pair.getFile(), pair.getFileId(), md5);
 		return metaBuf;
 	}
 

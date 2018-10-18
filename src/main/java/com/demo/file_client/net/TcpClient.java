@@ -47,7 +47,7 @@ public class TcpClient {
 	private final static int SERVER_PORT = 2345;
 	
 	//本地端口号
-	private final static int LOCAL_PORT = 999;
+	private final static int LOCAL_PORT = 9991;
 	
 	private static Logger logger = LoggerFactory.getLogger(TcpClient.class);
 	
