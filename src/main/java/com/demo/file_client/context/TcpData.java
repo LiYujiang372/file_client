@@ -24,6 +24,16 @@ public class TcpData {
 	private static final int OAUTH_HEAD = 0x12;
 	
 	/**
+	 * 元数据包头
+	 */
+	private static final int META_HEAD = 0x22;
+	
+	/**
+	 * 数据包头
+	 */
+	private static final int DATA_HEAD = 0x32;
+	
+	/**
 	 * 
 	 * @param channel
 	 * @param tid
@@ -50,14 +60,14 @@ public class TcpData {
 	/**
 	 * 文件数据数据包
 	 * @param size 文件总大小
-	 * @param id 文件唯一Id
+	 * @param fileid 文件唯一Id
 	 * @param bytes 文件内容
 	 * @return
 	 */
-	public ByteBuf getFileDataBuf(int size, long id, byte[] bytes) {
+	public ByteBuf getFileDataBuf(int size, int fileid, byte[] bytes) {
 		ByteBuf buffer = Unpooled.buffer();
-		buffer.writeByte(0x12);					//包类型表示符
-		buffer.writeLong(id);					//文件唯一标识符
+		buffer.writeByte(DATA_HEAD);			//包类型表示符
+		buffer.writeInt(fileid);				//文件唯一标识符
 		buffer.writeInt(bytes.length);			//数据区长度
 		buffer.writeBytes(bytes);				//数据区
 		return buffer;
@@ -66,16 +76,17 @@ public class TcpData {
 	/**
 	 * 文件元数据包
 	 */
-	public ByteBuf getFileMetaBuf(File file, long fileId, byte[] md5) {
+	public ByteBuf getFileMetaBuf(File file, int fileId, byte[] md5) {
 		ByteBuf buf = Unpooled.buffer();
-		buf.writeByte(0x22);//包类型标识符
-		buf.writeLong(fileId);//文件id
+		buf.writeByte(META_HEAD);//包类型标识符
+		buf.writeInt(0);//文件id
 		
 		/*
 		 * 构造数据区
 		 */
 		ByteBuf metaBuf = Unpooled.buffer();
-		metaBuf.writeLong(fileId);//文件id
+		metaBuf.writeInt(fileId);//文件id
+		metaBuf.writeLong(System.currentTimeMillis());//文件创建时间
 		metaBuf.writeByte(1);//文件类型
 		metaBuf.writeInt((int) file.length());//文件总大小
 		metaBuf.writeBytes(md5);//MD5校验码

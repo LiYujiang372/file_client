@@ -5,11 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import javax.swing.JLabel;
-import com.demo.file_client.util.Utils;
 
 public class FileLabelPair {
+	
+	//本地文件id
+	private static int index = 0;
 	
 	//文件
 	private File file;
@@ -17,8 +18,11 @@ public class FileLabelPair {
 	//文件所有字节
 	private byte[] bytes;
 	
-	//文件唯一Id
-	private long fileId;
+	//文件唯一Id, 初始值为0,服务端返回后再赋值
+	private int fileId;
+	
+	//文件本地唯一id
+	private int localId;
 
 	//文件名标签
 	private JLabel nameLable;
@@ -33,9 +37,12 @@ public class FileLabelPair {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.fileId = Utils.getRandomLong();
+		this.localId = index;//初始的文件id为本地id
 		this.nameLable = initNameLabel(number, file);
 		this.processLabel = initProcessLabel(number);
+		
+		//本地id增加
+		index ++;
 	}
 
 	/**
@@ -93,11 +100,11 @@ public class FileLabelPair {
 		this.file = file;
 	}
 
-	public long getFileId() {
+	public int getFileId() {
 		return fileId;
 	}
 
-	public void setFileId(long fileId) {
+	public void setFileId(int fileId) {
 		this.fileId = fileId;
 	}
 
@@ -107,6 +114,14 @@ public class FileLabelPair {
 
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
+	}
+
+	public int getLocalId() {
+		return localId;
+	}
+
+	public void setLocalId(int localId) {
+		this.localId = localId;
 	}
 	
 }

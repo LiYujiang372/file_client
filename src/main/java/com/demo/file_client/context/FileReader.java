@@ -28,6 +28,7 @@ public class FileReader {
 	//文件帧数据区大小
 	public static final int FRAME_SIZE = 20480;
 	
+	@SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory.getLogger(FileReader.class);
 	
 	/**
@@ -108,17 +109,16 @@ public class FileReader {
 	 * 获取一帧文件数据
 	 */
 	@LogExecuteTime
-	public ByteBuf getFileFrame(long fileId, int offset) {
-		FileLabelPair pair = FileListPanel.pairMap.get(fileId);
+	public ByteBuf getFileFrame(int localId, int offset) {
+		FileLabelPair pair = FileListPanel.pairMap.get(localId);
 		if (pair == null) {
 			return null;
 		}
-		File file = pair.getFile();
 		byte[] bytes = readBytes(pair.getBytes(), offset, FRAME_SIZE);
 		if (bytes == null) {
 			return null;
 		}
-		ByteBuf buf = tcpData.getFileDataBuf((int) file.length(), fileId, bytes);
+		ByteBuf buf = tcpData.getFileDataBuf((int) pair.getFile().length(), pair.getFileId(), bytes);
 		return buf;
 	}
 	
@@ -127,7 +127,7 @@ public class FileReader {
 	 */
 	public ByteBuf getFileMetaBuf(FileLabelPair pair) {
 		byte[] md5 = DigestUtils.md5Digest(pair.getBytes());
-		ByteBuf metaBuf = tcpData.getFileMetaBuf(pair.getFile(), pair.getFileId(), md5);
+		ByteBuf metaBuf = tcpData.getFileMetaBuf(pair.getFile(), 0, md5);
 		return metaBuf;
 	}
 

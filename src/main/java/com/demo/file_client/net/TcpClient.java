@@ -41,10 +41,10 @@ public class TcpClient {
 	private OauthOutHandler oauthOutHandler;
 	
 	//服务器地址
-	private final static String SERVER_IP = "10.0.0.167";
+	private final static String SERVER_IP = "10.0.0.182";
 	
 	//服务器端口号
-	private final static int SERVER_PORT = 2345;
+	private final static int SERVER_PORT = 12345;
 	
 	//本地端口号
 	private final static int LOCAL_PORT = 9991;

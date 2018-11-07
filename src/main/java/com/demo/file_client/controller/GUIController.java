@@ -39,7 +39,7 @@ public class GUIController {
 	/**
 	 * 更新文件传输进度
 	 */
-	public void showProcess(long fileId, int save_size) {
+	public void showProcess(int fileId, int save_size) {
 		 FileLabelPair pair = FileListPanel.pairMap.get(fileId);
 		 int file_size = (int) pair.getFile().length();
 		 pair.updateProcess((byte) (save_size * 100.0/file_size));
@@ -50,6 +50,13 @@ public class GUIController {
 	 */
 	public void disableButton() {
 		uploadButton.setEnabled(false);
+	}
+	
+	/**
+	 * 文件上传按钮可用
+	 */
+	public void enableButton() {
+		uploadButton.setEnabled(true);
 	}
 
 }
