@@ -6,7 +6,6 @@ import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.swing.JButton;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.demo.file_client.controller.NetController;
@@ -20,7 +19,6 @@ import com.demo.file_client.controller.NetController;
 public class UploadButton extends JButton {
 	
 	@Autowired
-	@Lazy
 	private NetController netController;
 	
 	private static final long serialVersionUID = 6597829233951049176L;

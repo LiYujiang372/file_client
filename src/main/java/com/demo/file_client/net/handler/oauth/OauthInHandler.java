@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.demo.file_client.controller.GUIController;
-import com.demo.file_client.net.handler.ProcessHandler;
+import com.demo.file_client.net.handler.ResponseHandler;
 
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -22,7 +22,7 @@ public class OauthInHandler extends ChannelInboundHandlerAdapter {
 	private GUIController guiController;
 	
 	@Autowired
-	private ProcessHandler processHandler;
+	private ResponseHandler responseHandler;
 	
 	@Override
 	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
@@ -89,6 +89,6 @@ public class OauthInHandler extends ChannelInboundHandlerAdapter {
 		//更新handler
 		ctx.pipeline().remove(OauthInHandler.class);
 		ctx.pipeline().remove(OauthOutHandler.class);
-		ctx.pipeline().addLast(processHandler);
+		ctx.pipeline().addLast(responseHandler);
 	}
 }
