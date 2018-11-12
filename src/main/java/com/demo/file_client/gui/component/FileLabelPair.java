@@ -9,9 +9,6 @@ import javax.swing.JLabel;
 
 public class FileLabelPair {
 	
-	//本地文件id
-	private static int index = 0;
-	
 	//文件
 	private File file;
 	
@@ -37,12 +34,9 @@ public class FileLabelPair {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.localId = index;//初始的文件id为本地id
+		this.localId = number;//初始的文件id为本地id
 		this.nameLable = initNameLabel(number, file);
 		this.processLabel = initProcessLabel(number);
-		
-		//本地id增加
-		index ++;
 	}
 
 	/**

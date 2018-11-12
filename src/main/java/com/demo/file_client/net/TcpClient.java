@@ -101,7 +101,7 @@ public class TcpClient {
 				@Override
 				public void operationComplete(ChannelFuture future) throws Exception {
 					if (future.isSuccess()) {
-						logger.info("已经向服务器发送文件元数据");
+						logger.info("已经向服务器发送文件数据");
 					}
 				}
 			});

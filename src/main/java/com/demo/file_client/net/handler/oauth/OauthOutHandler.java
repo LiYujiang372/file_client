@@ -4,10 +4,9 @@ import java.net.SocketAddress;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.demo.file_client.context.TcpData;
+import com.demo.file_client.context.BufWriter;
 
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -23,9 +22,6 @@ public class OauthOutHandler extends ChannelOutboundHandlerAdapter {
 	
 	private static Logger logger = LoggerFactory.getLogger(OauthOutHandler.class);
 	
-	@Autowired
-	private TcpData tcpData;
-
 	@Override
 	public void bind(ChannelHandlerContext ctx, SocketAddress localAddress, ChannelPromise promise) throws Exception {
 		System.out.println("OauthOutHandler.bind()");
@@ -47,7 +43,7 @@ public class OauthOutHandler extends ChannelOutboundHandlerAdapter {
 			public void operationComplete(ChannelFuture future) throws Exception {
 				if (future.isSuccess()) {
 					logger.info("连接成功, 发送鉴权数据包");
-					ByteBuf buf = tcpData.getOauthPacket(ctx.channel(), 1, 2);
+					ByteBuf buf = BufWriter.getOauthPacket(ctx.channel(), 1, 2);
 					ChannelFuture writeFuture = ctx.writeAndFlush(buf);
 					writeFuture.addListener(new ChannelFutureListener() {
 						@Override

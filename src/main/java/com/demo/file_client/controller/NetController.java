@@ -8,15 +8,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
-import com.demo.file_client.context.FileReader;
+import com.demo.file_client.context.file.FileFrame;
 import com.demo.file_client.gui.component.FileLabelPair;
-import com.demo.file_client.gui.component.FileListPanel;
 import com.demo.file_client.net.TcpClient;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.util.ReferenceCountUtil;
 
 /**
  * 客户端上传文件服务
@@ -31,38 +27,30 @@ public class NetController {
 	private TcpClient client;
 	
 	@Autowired
-	private GUIController gUIController;
-	
-	@Autowired
-	private FileReader fileReader;
+	private FileFrame fileFrame;
 	
 	/**
-	 * 多文件并行传输
+	 * 发送所有文件的元数据
 	 */
 	@Async(value = "taskExecutor")
 	public void sendFiles(Collection<FileLabelPair> fileLabelPair) {
-		if (FileListPanel.bufs.size() > 0) {
-			client.sendBuf(FileListPanel.bufs.poll());
-			gUIController.disableButton();
+		for (FileLabelPair pair : fileLabelPair) {
+			client.sendBuf(fileFrame.getFileMetaFrame(pair.getLocalId()));
 		}
 	}
 	
 	/**
-	 * 发送文件数据
+	 * 接收到文件id后, 发送文件数据
 	 */
-	public void sendFileData(int localId, int off) {
-//		ByteBuf outBuf = fileReader.getFileFrame(localId, save_size);
-//		if (outBuf != null) {
-//			ChannelFuture future = ctx.writeAndFlush(outBuf);
-//			future.addListener(new ChannelFutureListener() {
-//				@Override
-//				public void operationComplete(ChannelFuture future) throws Exception {
-//					if (future.isSuccess()) {
-//						logger.info("数据包发送成功,buf:{}, outBuf:{}", ReferenceCountUtil.refCnt(buf), ReferenceCountUtil.refCnt(outBuf));
-//					}
-//				}
-//			});
-//		}
+	@Async(value = "taskExecutor")
+	public void sendFileData(int fileId) {
+		int save_size = 0;
+		ByteBuf outBuf = fileFrame.getFileFrame(fileId, save_size);
+		while (outBuf != null) {
+			client.sendBuf(outBuf);
+			save_size = (outBuf.readableBytes() - 9) + save_size;
+			outBuf = fileFrame.getFileFrame(fileId, save_size);
+		}
 	}
 
 }

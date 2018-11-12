@@ -4,19 +4,15 @@ import java.awt.Color;
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.PostConstruct;
 import javax.swing.JPanel;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.demo.file_client.context.FileReader;
 import com.demo.file_client.gui.pattern.UIPatterns;
 import com.demo.file_client.util.Utils;
 
-import io.netty.buffer.ByteBuf;
 
 /**
  * 文件列表标签
@@ -26,9 +22,6 @@ import io.netty.buffer.ByteBuf;
 @Component
 public class FileListPanel extends JPanel {
 	
-	@Autowired
-	private FileReader fileReader;
-	
 	private static final long serialVersionUID = -6696011519189813884L;
 	
 	/**
@@ -37,8 +30,6 @@ public class FileListPanel extends JPanel {
 	private static int number = 0;
 	
 	public static Map<Integer, FileLabelPair> pairMap = new ConcurrentHashMap<>();
-	
-	public static ConcurrentLinkedQueue<ByteBuf> bufs = new ConcurrentLinkedQueue<>();
 	
 	/* 
 	 * 初始化设置
@@ -56,19 +47,6 @@ public class FileListPanel extends JPanel {
 	}
 	
 	/**
-	 * 添加一个文件
-	 */
-	public void addOneFile(File file) {
-		FileLabelPair pair = new FileLabelPair(number, file);
-		this.add(pair.getNameLable());
-		this.add(pair.getProcessLabel());
-		pairMap.put(pair.getLocalId(), pair);
-		bufs.add(fileReader.getFileMetaBuf(pair));
-		number++;
-		this.repaint();
-	}
-	
-	/**
 	 * 添加一些文件
 	 */
 	public void addFiles(File[] files) {
@@ -78,5 +56,18 @@ public class FileListPanel extends JPanel {
 			}
 		}
 	}
+	
+	/**
+	 * 添加一个文件
+	 */
+	private void addOneFile(File file) {
+		FileLabelPair pair = new FileLabelPair(number, file);
+		this.add(pair.getNameLable());
+		this.add(pair.getProcessLabel());
+		pairMap.put(pair.getLocalId(), pair);
+		number++;
+		this.repaint();
+	}
+	
 
 }

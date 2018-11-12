@@ -10,7 +10,6 @@ import com.demo.file_client.net.handler.ProcessHandler;
 
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 @Sharable
@@ -77,11 +76,12 @@ public class OauthInHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		System.out.println("OauthInHandler.channelRead()");
-		ByteBuf buf = (ByteBuf) msg;
-		logger.info("收到服务器返回的消息, 鉴权成功!");
 		
 		//解析buf数据,更新业务逻辑
+		//ByteBuf buf = (ByteBuf) msg;
 		//parse buf
+		
+		logger.info("收到服务器返回的消息, 鉴权成功!");
 		
 		//更新视图层
 		guiController.netState(1);
